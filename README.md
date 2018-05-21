@@ -1,2 +1,6 @@
 # redux-attach-substore
-Fractional Redux.
+Multistore Redux.
+
+## TODO 
+
+Detect cyclic substore relation.
