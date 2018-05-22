@@ -2,10 +2,10 @@ import {assume, existing, notExisting} from '@pinyin/maybe'
 import {Action} from '@pinyin/redux'
 import {DeepPartial, Reducer, Store, StoreEnhancer, StoreEnhancerStoreCreator} from 'redux'
 import {Container} from './Container'
-import {ContainerAction, isContainerAction, SubstoreAttached, SubstoreCleaned, SubstoreUpdated} from './ContainerAction'
+import {ContainerMetaAction, isContainerAction, SubstoreAttached, SubstoreCleaned, SubstoreUpdated} from './ContainerMetaAction'
 import {ContainerState, Substores} from './ContainerState'
-import {isSubstoreAction} from './SubstoreAction'
 import {SubstoreID} from './SubstoreID'
+import {isSubstoreAction} from './SubstoreMetaAction'
 
 export function asContainer(): StoreEnhancer<Container, ContainerState> {
     return (
@@ -16,8 +16,8 @@ export function asContainer(): StoreEnhancer<Container, ContainerState> {
     ): Store<S & ContainerState, A> & Container => {
         const wrapReducer = (
             innerReducer: Reducer<S, A>
-        ): Reducer<S & ContainerState, A | ContainerAction> => (
-            state: (S & ContainerState) | undefined, action: A | ContainerAction
+        ): Reducer<S & ContainerState, A | ContainerMetaAction> => (
+            state: (S & ContainerState) | undefined, action: A | ContainerMetaAction
         ): S & ContainerState => {
             const prevState = assume(state, it => it[Substores])
             const innerState = innerReducer(state, action as A) // TODO
@@ -63,7 +63,7 @@ export function asContainer(): StoreEnhancer<Container, ContainerState> {
             return currState
         }
 
-        const innerStore: Store<S & ContainerState, A | ContainerAction> = inner(
+        const innerStore: Store<S & ContainerState, A | ContainerMetaAction> = inner(
             wrapReducer(reducer), // FIXME
             preloadedState as DeepPartial<S & ContainerState>
         )

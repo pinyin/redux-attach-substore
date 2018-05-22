@@ -5,7 +5,7 @@ export const SubstoreAttached = Symbol('SubstoreAttached')
 export const SubstoreUpdated = Symbol('SubstoreUpdated')
 export const SubstoreCleaned = Symbol('SubstoreCleaned')
 
-export type ContainerAction = Action<{
+export type ContainerMetaAction = Action<{
     [SubstoreAttached]: {
         id: SubstoreID
         state: any
@@ -20,7 +20,7 @@ export type ContainerAction = Action<{
     }
 }>
 
-export function isContainerAction(action: any): action is ContainerAction {
+export function isContainerAction(action: any): action is ContainerMetaAction {
     return action.type === SubstoreUpdated ||
         action.type === SubstoreAttached ||
         action.type === SubstoreCleaned

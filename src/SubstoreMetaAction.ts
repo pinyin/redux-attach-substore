@@ -3,13 +3,13 @@ import {SubstoreID} from './SubstoreID'
 
 export const ContainerSpecifiedState = Symbol('ContainerSpecifiedState')
 
-export type SubstoreAction = Action<{
+export type SubstoreMetaAction = Action<{
     [ContainerSpecifiedState]: {
         id: SubstoreID
         state: any
     }
 }>
 
-export function isSubstoreAction(action: any): action is SubstoreAction {
+export function isSubstoreAction(action: any): action is SubstoreMetaAction {
     return action.type === ContainerSpecifiedState
 }

@@ -2,13 +2,13 @@ import {Maybe} from '@pinyin/maybe'
 import {Action} from '@pinyin/redux'
 import {nothing} from '@pinyin/types'
 import {DeepPartial, Reducer, Store, StoreEnhancer, StoreEnhancerStoreCreator} from 'redux'
-import {ContainerAction, SubstoreAttached, SubstoreUpdated} from './ContainerAction'
+import {ContainerMetaAction, SubstoreAttached, SubstoreUpdated} from './ContainerMetaAction'
 import {ContainerState, Substores} from './ContainerState'
 import {Substore} from './Substore';
-import {ContainerSpecifiedState, isSubstoreAction} from './SubstoreAction'
 import {SubstoreID} from './SubstoreID'
+import {ContainerSpecifiedState, isSubstoreAction} from './SubstoreMetaAction'
 
-export function attachTo(container: Store<ContainerState, ContainerAction>): (as: SubstoreID) => StoreEnhancer<Substore> {
+export function attachTo(container: Store<ContainerState, ContainerMetaAction>): (as: SubstoreID) => StoreEnhancer<Substore> {
     return (id: SubstoreID): StoreEnhancer<Substore> => (
         next: StoreEnhancerStoreCreator
     ) => <S, A extends Action>(
@@ -48,15 +48,17 @@ export function attachTo(container: Store<ContainerState, ContainerAction>): (as
             dispatch: <T extends A>(action: T): T => {
                 if (attached) {
                     const prevState = container.getState()[Substores].get(id)
-                    expectedState = reducer(prevState, action)
-                    container.dispatch({
-                        type: SubstoreUpdated,
-                        payload: {id: id, action, newState: expectedState}
-                    })
-                    // TODO used the synchronized nature of dispatch()
-                    const currState = container.getState()[Substores].get(id)
-                    if (currState === expectedState) {
-                        innerStore.dispatch(action)
+                    expectedState = wrapReducer(reducer)(prevState, action)
+                    if (prevState !== expectedState && !isSubstoreAction(action)) {
+                        container.dispatch({
+                            type: SubstoreUpdated,
+                            payload: {id: id, action, newState: expectedState}
+                        })
+                        // TODO used the synchronized nature of dispatch()
+                        const stateInContainer = container.getState()[Substores].get(id)
+                        if (stateInContainer === expectedState) {
+                            innerStore.dispatch(action)
+                        }
                     }
                 } else {
                     innerStore.dispatch(action)

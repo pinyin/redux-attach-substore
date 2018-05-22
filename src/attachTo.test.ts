@@ -1,12 +1,12 @@
 import {createStore} from 'redux'
 import {asContainer} from './asContainer'
 import {attachTo} from './attachTo'
-import {ContainerAction, SubstoreUpdated} from './ContainerAction'
+import {ContainerMetaAction, SubstoreUpdated} from './ContainerMetaAction'
 import {Substores} from './ContainerState'
 
 describe(`${attachTo.name}`, () => {
     const container = createStore(
-        (state: any, action: ContainerAction) => { return {} },
+        (state: any, action: ContainerMetaAction) => { return {} },
         asContainer()
     )
 

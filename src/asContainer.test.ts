@@ -1,10 +1,10 @@
 import {createStore} from 'redux'
 import {asContainer} from './asContainer'
-import {ContainerAction, SubstoreAttached, SubstoreCleaned, SubstoreUpdated} from './ContainerAction'
+import {ContainerMetaAction, SubstoreAttached, SubstoreCleaned, SubstoreUpdated} from './ContainerMetaAction'
 import {Substores} from './ContainerState'
 
 describe(`${asContainer.name}`, () => {
-    const store = createStore((state: {} | undefined, action: ContainerAction) => { return {} }, asContainer())
+    const store = createStore((state: {} | undefined, action: ContainerMetaAction) => { return {} }, asContainer())
 
     test(`container store should have an empty map`, () => {
         expect(store.getState()[Substores]).toBeInstanceOf(Map)
