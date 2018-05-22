@@ -35,8 +35,4 @@ describe(`${attachTo.name}`, () => {
         expect(substore.getState()).toBe(18)
     })
 
-    test(`substore should no longer change when container changes`, () => {
-
-    })
-
 })

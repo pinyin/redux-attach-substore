@@ -1,16 +1,8 @@
 # redux-attach-substore
+
 Multistore Redux.
 
-## Usage
-
-```typescript jsx
-import {attachTo, asContainer, Substores} from './index'
-import {createStore} from 'redux'
-
-const container = createStore(()=> {return {}}, asContainer())
-
-
-```
+## [Usage](./src/attachTo.test.ts)
 
 ## TODO 
 
