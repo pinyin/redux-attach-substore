@@ -1,28 +1,29 @@
 import {assume, existing, notExisting} from '@pinyin/maybe'
 import {Action} from '@pinyin/redux'
 import {DeepPartial, Reducer, Store, StoreEnhancer, StoreEnhancerStoreCreator} from 'redux'
-import {isContainerAction, SubstoreAttached, SubstoreDetached, SubstoreUpdated} from './ContainerAction'
+import {Container} from './Container'
+import {ContainerAction, isContainerAction, SubstoreAttached, SubstoreCleaned, SubstoreUpdated} from './ContainerAction'
 import {ContainerState, Substores} from './ContainerState'
 import {isSubstoreAction} from './SubstoreAction'
 import {SubstoreID} from './SubstoreID'
 
-export function asContainer(): StoreEnhancer<{}, ContainerState> {
+export function asContainer(): StoreEnhancer<Container, ContainerState> {
     return (
         inner: StoreEnhancerStoreCreator
-    ): StoreEnhancerStoreCreator<{}, ContainerState> => <S, A extends Action>(
+    ): StoreEnhancerStoreCreator<Container, ContainerState> => <S, A extends Action>(
         reducer: Reducer<S, A>,
         preloadedState?: DeepPartial<S>
-    ): Store<S & ContainerState, A> => {
+    ): Store<S & ContainerState, A> & Container => {
         const wrapReducer = (
-            innerReducer: Reducer<S & ContainerState, A>
-        ): Reducer<S & ContainerState, A> => (
-            state: (S & ContainerState) | undefined, action: A
+            innerReducer: Reducer<S, A>
+        ): Reducer<S & ContainerState, A | ContainerAction> => (
+            state: (S & ContainerState) | undefined, action: A | ContainerAction
         ): S & ContainerState => {
             const prevState = assume(state, it => it[Substores])
-            const innerState = innerReducer(state, action)
+            const innerState = innerReducer(state, action as A) // TODO
             let currState = innerState as S & ContainerState
             if (notExisting(currState[Substores])) {
-                currState = Object.assign({}, innerState)
+                currState = Object.assign({}, innerState) as S & ContainerState
                 currState[Substores] = prevState || new Map()
             }
 
@@ -48,9 +49,9 @@ export function asContainer(): StoreEnhancer<{}, ContainerState> {
                             currState[Substores] = substores
                         }
                         break;
-                    case SubstoreDetached:
+                    case SubstoreCleaned:
                         if (!substores.has(id)) {
-                            throw new Error(`Attempting to detach non-existing substore #${id.toString()}`)
+                            throw new Error(`Attempting to clean on-existing substore #${id.toString()}`)
                         }
                         substores.delete(id)
                         currState = Object.assign({}, currState)
@@ -62,17 +63,20 @@ export function asContainer(): StoreEnhancer<{}, ContainerState> {
             return currState
         }
 
-        const innerStore = inner(
-            wrapReducer(reducer as Reducer<S & ContainerState, A>), // FIXME
+        const innerStore: Store<S & ContainerState, A | ContainerAction> = inner(
+            wrapReducer(reducer), // FIXME
             preloadedState as DeepPartial<S & ContainerState>
         )
 
         return {
             ...innerStore,
             replaceReducer: (reducer: Reducer<S & ContainerState, A>) =>
-                innerStore.replaceReducer(wrapReducer(reducer)),
+                innerStore.replaceReducer(wrapReducer(reducer as Reducer<S, A>)),
             dispatch: <T extends A>(action: T): T => {
                 return innerStore.dispatch(action)
+            },
+            cleanUp: (substore: SubstoreID): void => {
+                innerStore.dispatch({type: SubstoreCleaned, payload: {id: substore}})
             }
         }
     }

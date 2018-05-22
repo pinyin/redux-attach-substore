@@ -1,6 +1,6 @@
 import {createStore} from 'redux'
 import {asContainer} from './asContainer'
-import {ContainerAction, SubstoreAttached, SubstoreDetached, SubstoreUpdated} from './ContainerAction'
+import {ContainerAction, SubstoreAttached, SubstoreCleaned, SubstoreUpdated} from './ContainerAction'
 import {Substores} from './ContainerState'
 
 describe(`${asContainer.name}`, () => {
@@ -18,7 +18,7 @@ describe(`${asContainer.name}`, () => {
     })
 
     test(`container should delete corresponding state when substore is detached`, () => {
-        store.dispatch({type: SubstoreDetached, payload: {id: idA}})
+        store.dispatch({type: SubstoreCleaned, payload: {id: idA}})
         expect(store.getState()[Substores].get(idA)).toBeUndefined()
     })
 

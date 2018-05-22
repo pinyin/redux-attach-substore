@@ -18,12 +18,12 @@ describe(`${attachTo.name}`, () => {
         asSubstore(idA)
     )
 
-    test(`container should have substore's initial states when substore attach`, () => {
+    test(`container should have substore's initial state when substore attaches`, () => {
         expect(substore.getState()).toBe(1)
         expect(container.getState()[Substores].get(idA)).toBe(1)
     })
 
-    test(`container should have update with substores`, () => {
+    test(`container should update with substores`, () => {
         substore.dispatch({type: 'increase'})
         expect(substore.getState()).toBe(2)
         expect(container.getState()[Substores].get(idA)).toBe(2)
@@ -33,6 +33,10 @@ describe(`${attachTo.name}`, () => {
         container.dispatch({type: SubstoreUpdated, payload: {id: idA, action: {type: 'increase'}, newState: 18}})
         expect(container.getState()[Substores].get(idA)).toBe(18)
         expect(substore.getState()).toBe(18)
+    })
+
+    test(`substore should no longer change when container changes`, () => {
+
     })
 
 })
