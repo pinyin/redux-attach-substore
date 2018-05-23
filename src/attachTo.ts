@@ -20,7 +20,7 @@ export function attachTo(container: Store<ContainerState, ContainerMetaAction>):
                 (state: S | undefined, action: A | SubstoreMetaAction): S => {
                     if (isSubstoreAction(action)) {
                         if (action.type === ContainerSpecifiedState) {
-                            return (action as any).payload // FIXME
+                            return action.payload // FIXME
                         }
                     }
                     return reducer(state, action as A)
@@ -37,13 +37,13 @@ export function attachTo(container: Store<ContainerState, ContainerMetaAction>):
             const unwatchContainer = container.subscribe(() => {
                 const state = container.getState()[Substores].get(id)
                 if (state !== expectedState) {
-                    innerStore.dispatch({type: ContainerSpecifiedState, payload: state} as any)
+                    innerStore.dispatch({type: ContainerSpecifiedState, payload: state})
                 }
             })
 
             let attached: boolean = true
-            return {
-                ...innerStore,
+            const store: Store<S, A> & Substore = {
+                ...innerStore as Store<S, A>,
                 detach: () => {
                     unwatchContainer()
                     attached = false
@@ -72,6 +72,7 @@ export function attachTo(container: Store<ContainerState, ContainerMetaAction>):
                     innerStore.replaceReducer(wrapReducer(reducer))
                 }
             }
+            return store
         }
     }
 }
