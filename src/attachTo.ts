@@ -20,7 +20,7 @@ export function attachTo(container: Store<ContainerState, ContainerMetaAction>):
                 (state: S | undefined, action: A | SubstoreMetaAction): S => {
                     if (isSubstoreAction(action)) {
                         if (action.type === ContainerSpecifiedState) {
-                            return action.payload // FIXME
+                            return action.payload
                         }
                     }
                     return reducer(state, action as A)
