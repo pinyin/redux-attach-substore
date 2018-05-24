@@ -33,4 +33,11 @@ describe(`${attachTo.name}`, () => {
         expect(substore.getState()).toBe(18)
     })
 
+    test(`substore should no longer change with container after detached`, () => {
+        substore.detach()
+        container.dispatch({type: SubstoreUpdated, payload: {id: idA, action: {type: 'increase'}, newState: 1}})
+        expect(container.getState()[Substores].get(idA)).toBe(1)
+        expect(substore.getState()).toBe(18)
+    })
+
 })
