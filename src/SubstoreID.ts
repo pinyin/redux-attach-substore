@@ -1,1 +1,1 @@
-export type SubstoreID = symbol
+export type SubstoreID = string

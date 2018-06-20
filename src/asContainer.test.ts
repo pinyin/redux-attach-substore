@@ -10,7 +10,7 @@ describe(`${asContainer.name}`, () => {
         expect(store.getState()[Substores]).toBeInstanceOf(Map)
     })
 
-    const idA = Symbol('A')
+    const idA = 'a'
 
     test(`container should have substore state when substore attach`, () => {
         store.dispatch({type: SubstoreAttached, payload: {id: idA, state: 'a'}})

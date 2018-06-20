@@ -10,7 +10,7 @@ describe(`${attachTo.name}`, () => {
         asContainer()
     )
 
-    const idA = Symbol('a')
+    const idA = 'a'
     const substore = createStore(
         (state: number | undefined, action: { type: 'increase' }) => { return (state || 0) + 1 },
         attachTo(container).as(idA)
