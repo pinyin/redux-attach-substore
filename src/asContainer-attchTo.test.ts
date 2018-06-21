@@ -40,4 +40,9 @@ describe(`${asContainer.name}-${attachTo.name}`, () => {
         expect(substore.getState()).toBe(18)
     })
 
+    test(`container should be able to clean substore cache`, () => {
+        container.dispatch({type: SubstoreCleaned, payload: {id: idA}})
+        expect(container.getState()[Substores].get(idA)).toBeUndefined()
+    })
+
 })
