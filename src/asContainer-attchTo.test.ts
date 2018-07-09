@@ -13,7 +13,7 @@ describe(`${asContainer.name}-${attachTo.name}`, () => {
     const idA = 'a'
     const substore = createStore(
         (state: number | undefined, action: { type: 'increase' }) => { return (state || 0) + 1 },
-        attachTo(container).as(idA)
+        attachTo(container)(idA),
     )
 
     test(`container should have substore's initial state when substore attaches`, () => {
