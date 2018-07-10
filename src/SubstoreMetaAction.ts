@@ -1,8 +1,8 @@
-import {Action} from '@pinyin/redux'
+import {ActionFromMap} from '@pinyin/redux'
 
 export const ContainerSpecifiedState = Symbol('ContainerSpecifiedState')
 
-export type SubstoreMetaAction = Action<{
+export type SubstoreMetaAction = ActionFromMap<{
     [ContainerSpecifiedState]: any
 }>
 

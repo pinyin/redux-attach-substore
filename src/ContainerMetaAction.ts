@@ -1,11 +1,12 @@
-import {Action} from '@pinyin/redux'
+import {ActionFromMap, PAYLOAD, TYPE} from '@pinyin/redux'
+import {Action} from 'redux'
 import {SubstoreID} from './SubstoreID'
 
 export const SubstoreAttached = Symbol('SubstoreAttached')
 export const SubstoreUpdated = Symbol('SubstoreUpdated')
 export const SubstoreCleaned = Symbol('SubstoreCleaned')
 
-export type ContainerMetaAction = Action<{
+export type ContainerMetaAction = ActionFromMap<{
     [SubstoreAttached]: {
         id: SubstoreID
         state: any
@@ -19,6 +20,8 @@ export type ContainerMetaAction = Action<{
         id: SubstoreID
     }
 }>
+
+let a: ContainerMetaAction = {[TYPE]: SubstoreCleaned, [PAYLOAD]: {id: ''}}
 
 export function isContainerAction(action: any): action is ContainerMetaAction {
     return action.type === SubstoreUpdated ||

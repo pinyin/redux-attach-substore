@@ -1,7 +1,7 @@
 import {existing, Maybe} from '@pinyin/maybe'
-import {Action} from '@pinyin/redux'
+import {PAYLOAD, TYPE} from '@pinyin/redux'
 import {nothing} from '@pinyin/types'
-import {DeepPartial, Reducer, Store, StoreEnhancer, StoreEnhancerStoreCreator} from 'redux'
+import {Action, DeepPartial, Reducer, Store, StoreEnhancer, StoreEnhancerStoreCreator} from 'redux'
 import {Attacher} from './Attacher'
 import {ContainerMetaAction, SubstoreAttached, SubstoreUpdated} from './ContainerMetaAction'
 import {ContainerState, Substores} from './ContainerState'
@@ -20,7 +20,7 @@ export function attachTo(container: Store<ContainerState, ContainerMetaAction>):
             (state: S | undefined, action: A | SubstoreMetaAction): S => {
                 if (isSubstoreAction(action)) {
                     if (action.type === ContainerSpecifiedState) {
-                        return action.payload
+                        return action[PAYLOAD]
                     }
                 }
                 return reducer(state, action as A)
@@ -28,16 +28,16 @@ export function attachTo(container: Store<ContainerState, ContainerMetaAction>):
         const innerStore: Store<S, A | SubstoreMetaAction> = next(wrapReducer(reducer), preloadedState)
         const cachedState = container.getState()[Substores].get(id)
         if (existing(cachedState)) {
-            innerStore.dispatch({type: ContainerSpecifiedState, payload: cachedState})
+            innerStore.dispatch({[TYPE]: ContainerSpecifiedState, [PAYLOAD]: cachedState} as SubstoreMetaAction)
         } else {
-            container.dispatch({type: SubstoreAttached, payload: {id: id, state: innerStore.getState()}})
+            container.dispatch({[TYPE]: SubstoreAttached, [PAYLOAD]: {id: id, state: innerStore.getState()}})
         }
 
         let expectedState: Maybe<S> = nothing
         const unwatchContainer = container.subscribe(() => {
             const state = container.getState()[Substores].get(id)
             if (state !== expectedState) {
-                innerStore.dispatch({type: ContainerSpecifiedState, payload: state})
+                innerStore.dispatch({[TYPE]: ContainerSpecifiedState, [PAYLOAD]: state} as SubstoreMetaAction)
             }
         })
 
@@ -54,8 +54,8 @@ export function attachTo(container: Store<ContainerState, ContainerMetaAction>):
                     expectedState = wrapReducer(reducer)(prevState, action)
                     if (prevState !== expectedState && !isSubstoreAction(action)) {
                         container.dispatch({
-                            type: SubstoreUpdated,
-                            payload: {id: id, action, newState: expectedState},
+                            [TYPE]: SubstoreUpdated,
+                            [PAYLOAD]: {id: id, action, newState: expectedState},
                         })
                         // used the synchronized nature of dispatch()
                         const stateInContainer = container.getState()[Substores].get(id)

@@ -1,3 +1,4 @@
+import {PAYLOAD} from '@pinyin/redux'
 import {createStore} from 'redux'
 import {asContainer} from './asContainer'
 import {attachTo} from './attachTo'
@@ -28,20 +29,20 @@ describe(`${asContainer.name}-${attachTo.name}`, () => {
     })
 
     test(`substore should change with container`, () => {
-        container.dispatch({type: SubstoreUpdated, payload: {id: idA, action: {type: 'increase'}, newState: 18}})
+        container.dispatch({type: SubstoreUpdated, [PAYLOAD]: {id: idA, action: {type: 'increase'}, newState: 18}})
         expect(container.getState()[Substores].get(idA)).toBe(18)
         expect(substore.getState()).toBe(18)
     })
 
     test(`substore should no longer change with container after detached`, () => {
         substore.detach()
-        container.dispatch({type: SubstoreUpdated, payload: {id: idA, action: {type: 'increase'}, newState: 1}})
+        container.dispatch({type: SubstoreUpdated, [PAYLOAD]: {id: idA, action: {type: 'increase'}, newState: 1}})
         expect(container.getState()[Substores].get(idA)).toBe(1)
         expect(substore.getState()).toBe(18)
     })
 
     test(`container should be able to clean substore cache`, () => {
-        container.dispatch({type: SubstoreCleaned, payload: {id: idA}})
+        container.dispatch({type: SubstoreCleaned, [PAYLOAD]: {id: idA}})
         expect(container.getState()[Substores].get(idA)).toBeUndefined()
     })
 

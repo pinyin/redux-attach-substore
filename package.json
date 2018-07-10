@@ -1,6 +1,6 @@
 {
   "name": "@pinyin/redux-attach-substore",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Multistore Redux.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -11,7 +11,7 @@
   "sideEffects": false,
   "scripts": {
     "prepublishOnly": "rm -rf dist && npx tsc",
-    "test": "npx jest"
+    "test": "npx tsc && npx jest"
   },
   "repository": {
     "type": "git",
@@ -27,18 +27,18 @@
   },
   "homepage": "https://github.com/pinyin/redux-attach-substore#readme",
   "devDependencies": {
-    "@types/jest": "^23.1.1",
-    "jest": "^23.1.0",
+    "@types/jest": "^23.1.5",
+    "jest": "^23.3.0",
     "redux": "^4.0.0",
-    "ts-jest": "^22.4.6",
+    "ts-jest": "^22.0.0",
     "typescript": "^2.9.2"
   },
   "dependencies": {
-    "@pinyin/maybe": "^0.0.7",
-    "@pinyin/redux": "0.0.20",
-    "@pinyin/types": "0.0.26",
+    "@pinyin/maybe": "^0.0.8",
+    "@pinyin/redux": "^0.0.25",
+    "@pinyin/types": "^0.0.43",
     "redux": "^4.0.0",
-    "tslib": "^1.9.2"
+    "tslib": "^1.9.3"
   },
   "jest": {
     "roots": [
