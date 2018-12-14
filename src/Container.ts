@@ -1,5 +1,5 @@
-import {SubstoreID} from './SubstoreID'
+import { SubstoreID } from './SubstoreID'
 
 export type Container = {
-    cleanUp: (substore: SubstoreID) => void
+  cleanUp: (substore: SubstoreID) => void
 }

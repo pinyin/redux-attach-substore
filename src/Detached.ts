@@ -1,2 +1,1 @@
-export const Detached = Symbol("Detached")
-
+export const Detached = Symbol('Detached')

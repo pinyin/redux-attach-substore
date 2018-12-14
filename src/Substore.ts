@@ -1,3 +1,3 @@
 export type Substore = {
-    detach: () => void
+  detach: () => void
 }
