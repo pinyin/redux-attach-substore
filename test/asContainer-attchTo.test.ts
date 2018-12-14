@@ -1,12 +1,12 @@
 import { createStore } from 'redux'
-import { asContainer } from './asContainer'
-import { attachTo } from './attachTo'
+import { asContainer } from '../src/asContainer'
+import { attachTo } from '../src/attachTo'
 import {
   ContainerMetaAction,
   SubstoreCleaned,
   SubstoreUpdated,
-} from './ContainerMetaAction'
-import { Substores } from './ContainerState'
+} from '../src/ContainerMetaAction'
+import { Substores } from '../src/ContainerState'
 
 describe(`${asContainer.name}-${attachTo.name}`, () => {
   const container = createStore((state: any, action: ContainerMetaAction) => {
