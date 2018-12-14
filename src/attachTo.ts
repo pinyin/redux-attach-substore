@@ -9,14 +9,14 @@ import {
 import { Attacher } from './Attacher'
 import {
   ContainerMetaAction,
-  SubstoreAttached,
-  SubstoreUpdated,
+  SubstoreStateAttached,
+  SubstoreStateUpdated,
 } from './ContainerMetaAction'
 import { ContainerState, Substores } from './ContainerState'
 import { Substore } from './Substore'
 import { SubstoreID } from './SubstoreID'
 import {
-  ContainerSpecifiedState,
+  StateOverriddenByContainer,
   isSubstoreAction,
   SubstoreMetaAction,
 } from './SubstoreMetaAction'
@@ -37,7 +37,7 @@ export function attachTo(
       action: A | SubstoreMetaAction,
     ): S => {
       if (isSubstoreAction(action)) {
-        if (action.type === ContainerSpecifiedState) {
+        if (action.type === StateOverriddenByContainer) {
           return action.payload
         }
       }
@@ -50,12 +50,12 @@ export function attachTo(
     const cachedState = container.getState()[Substores].get(id)
     if (cachedState) {
       innerStore.dispatch({
-        type: ContainerSpecifiedState,
+        type: StateOverriddenByContainer,
         payload: cachedState,
       } as SubstoreMetaAction)
     } else {
       container.dispatch({
-        type: SubstoreAttached,
+        type: SubstoreStateAttached,
         id: id,
         state: innerStore.getState(),
       })
@@ -66,7 +66,7 @@ export function attachTo(
       const state = container.getState()[Substores].get(id)
       if (state !== expectedState) {
         innerStore.dispatch({
-          type: ContainerSpecifiedState,
+          type: StateOverriddenByContainer,
           payload: state,
         } as SubstoreMetaAction)
       }
@@ -85,7 +85,7 @@ export function attachTo(
           expectedState = wrapReducer(reducer)(prevState, action)
           if (prevState !== expectedState && !isSubstoreAction(action)) {
             container.dispatch({
-              type: SubstoreUpdated,
+              type: SubstoreStateUpdated,
               id: id,
               action,
               newState: expectedState,

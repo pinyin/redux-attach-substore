@@ -1,25 +1,25 @@
 import { Action } from 'redux'
 import { SubstoreID } from './SubstoreID'
 
-export const SubstoreAttached = Symbol('SubstoreAttached')
-export const SubstoreUpdated = Symbol('SubstoreUpdated')
-export const SubstoreCleaned = Symbol('SubstoreCleaned')
+export const SubstoreStateAttached = '@substore-state-attached'
+export const SubstoreStateUpdated = '@substore-state-updated'
+export const SubstoreStateCleaned = '@substore-state-cleaned'
 
 export type ContainerMetaAction =
-  | { type: typeof SubstoreAttached; id: SubstoreID; state: any }
+  | { type: typeof SubstoreStateAttached; id: SubstoreID; state: any }
   | {
-      type: typeof SubstoreUpdated
+      type: typeof SubstoreStateUpdated
       id: SubstoreID
       action: Action
       newState: any
     }
-  | { type: typeof SubstoreCleaned; id: SubstoreID }
-let a: ContainerMetaAction = { type: SubstoreCleaned, id: '' }
+  | { type: typeof SubstoreStateCleaned; id: SubstoreID }
+let a: ContainerMetaAction = { type: SubstoreStateCleaned, id: '' }
 
 export function isContainerAction(action: any): action is ContainerMetaAction {
   return (
-    action.type === SubstoreUpdated ||
-    action.type === SubstoreAttached ||
-    action.type === SubstoreCleaned
+    action.type === SubstoreStateUpdated ||
+    action.type === SubstoreStateAttached ||
+    action.type === SubstoreStateCleaned
   )
 }

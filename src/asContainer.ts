@@ -10,9 +10,9 @@ import { Container } from './Container'
 import {
   ContainerMetaAction,
   isContainerAction,
-  SubstoreAttached,
-  SubstoreCleaned,
-  SubstoreUpdated,
+  SubstoreStateAttached,
+  SubstoreStateCleaned,
+  SubstoreStateUpdated,
 } from './ContainerMetaAction'
 import { ContainerState, Substores } from './ContainerState'
 import { SubstoreID } from './SubstoreID'
@@ -46,7 +46,7 @@ export function asContainer(): StoreEnhancer<Container, ContainerState> {
         const substores = new Map(currState[Substores])
         const id: SubstoreID = action.id
         switch (action.type) {
-          case SubstoreAttached:
+          case SubstoreStateAttached:
             if (substores.has(id)) {
               throw new Error(
                 `Attempting to reattach substore with existing ID #${id.toString()}`,
@@ -56,7 +56,7 @@ export function asContainer(): StoreEnhancer<Container, ContainerState> {
             currState = Object.assign({}, currState)
             currState[Substores] = substores
             break
-          case SubstoreUpdated:
+          case SubstoreStateUpdated:
             if (
               !isSubstoreAction(action.action) &&
               substores.get(id) !== action.newState
@@ -68,7 +68,7 @@ export function asContainer(): StoreEnhancer<Container, ContainerState> {
               currState[Substores] = substores
             }
             break
-          case SubstoreCleaned:
+          case SubstoreStateCleaned:
             if (!substores.has(id)) {
               throw new Error(
                 `Attempting to clean on-existing substore #${id.toString()}`,
@@ -101,7 +101,7 @@ export function asContainer(): StoreEnhancer<Container, ContainerState> {
       },
       cleanUp: (substore: SubstoreID): void => {
         innerStore.dispatch({
-          type: SubstoreCleaned,
+          type: SubstoreStateCleaned,
           id: substore,
         } as ContainerMetaAction)
       },

@@ -3,8 +3,8 @@ import { asContainer } from '../src/asContainer'
 import { attachTo } from '../src/attachTo'
 import {
   ContainerMetaAction,
-  SubstoreCleaned,
-  SubstoreUpdated,
+  SubstoreStateCleaned,
+  SubstoreStateUpdated,
 } from '../src/ContainerMetaAction'
 import { Substores } from '../src/ContainerState'
 
@@ -34,7 +34,7 @@ describe(`${asContainer.name}-${attachTo.name}`, () => {
 
   test(`substore should change with container`, () => {
     container.dispatch({
-      type: SubstoreUpdated,
+      type: SubstoreStateUpdated,
       id: idA,
       action: { type: 'increase' },
       newState: 18,
@@ -46,7 +46,7 @@ describe(`${asContainer.name}-${attachTo.name}`, () => {
   test(`substore should no longer change with container after detached`, () => {
     substore.detach()
     container.dispatch({
-      type: SubstoreUpdated,
+      type: SubstoreStateUpdated,
       id: idA,
       action: { type: 'increase' },
       newState: 1,
@@ -56,7 +56,7 @@ describe(`${asContainer.name}-${attachTo.name}`, () => {
   })
 
   test(`container should be able to clean substore cache`, () => {
-    container.dispatch({ type: SubstoreCleaned, id: idA })
+    container.dispatch({ type: SubstoreStateCleaned, id: idA })
     expect(container.getState()[Substores].get(idA)).toBeUndefined()
   })
 })
